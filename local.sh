@@ -32,6 +32,10 @@ function tg_sendinfo() {
 		-d "disable_web_page_preview=true"
 }
 
+# finished without errors
+function tg_finished() {
+	tg_sendinfo "$(echo "Build Finished in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.")"
+}
 
 # finished with error
 function tg_error() {
@@ -82,6 +86,7 @@ function make_flashable() {
     ZIP=$(ls | grep *.zip | grep -v *.sha1)
     tg_pushzip
     cd -
+    tg_finished
 }
 
 # Export
