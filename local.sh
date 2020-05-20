@@ -54,6 +54,7 @@ function build_kern() {
     BUILD_START=$(date +"%s")
 
     # cleaup first
+    rm -rf out
     make clean && make mrproper
 
     # building
