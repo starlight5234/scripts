@@ -35,7 +35,9 @@ function tg_sendinfo() {
 
 # finished without errors
 function tg_finished() {
-	tg_sendinfo "$(echo "Build Finished in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.")"
+	tg_sendinfo "$(echo "Build Finished in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.
+	The .sha1 is just a checksum file. Ignore it.
+	Flash the .zip file  ")"
 }
 
 # finished with error
