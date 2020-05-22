@@ -83,7 +83,13 @@ function make_flashable() {
     cd $ZIP_DIR
     make clean &>/dev/null
     cp $KERN_IMG $ZIP_DIR/zImage
-    make stable &>/dev/null
+    if [ $BRANCH == "stable" ]; then
+        make stable &>/dev/null
+    elif [ $BRANCH == "beta" ]; then
+        make beta &>/dev/null
+    else
+        make test &>/dev/null
+    fi
     echo "Flashable zip generated under $ZIP_DIR."
     ZIP=$(ls | grep *.zip | grep -v *.sha1)
     tg_pushzip

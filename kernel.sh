@@ -82,10 +82,15 @@ function build_kern() {
 # make flashable zip
 function make_flashable() {
     cd $ZIP_DIR
-        git checkout vince
     make clean &>/dev/null
     cp $KERN_IMG $ZIP_DIR/zImage
+    if [ $BRANCH == "stable" ] || [ $BRANCH == "stable-perf" ]; then
         make stable &>/dev/null
+    elif [ $BRANCH == "beta" ]; then
+        make beta &>/dev/null
+    else
+        make test &>/dev/null
+    fi
     echo "Flashable zip generated under $ZIP_DIR."
     ZIP=$(ls | grep *.zip | grep -v *.sha1)
     tg_pushzip
