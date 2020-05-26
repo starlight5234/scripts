@@ -10,6 +10,7 @@ THREAD=-j$(nproc --all)
 DEVICE="Vince"
 CHAT_ID="-1001293182414"
 CONFIG=vince-perf_defconfig
+PERSONAL_CI="-1001260562827"
     
     [ -d $HOME/toolchains/aarch64 ] || git clone https://github.com/kdrag0n/aarch64-elf-gcc.git $HOME/toolchains/aarch64
     [ -d $HOME/toolchains/aarch32 ] || git clone https://github.com/kdrag0n/arm-eabi-gcc.git $HOME/toolchains/aarch32
@@ -21,7 +22,7 @@ function tg_pushzip() {
 	curl -F document=@"$JIP"  "https://api.telegram.org/bot$BOT/sendDocument" \
 			-F chat_id=$CHAT_ID
 	curl -F document=@"$MD5"  "https://api.telegram.org/bot$BOT/sendDocument" \
-			-F chat_id=$CHAT_ID
+			-F chat_id=$PERSONAL_CI
 }
 
 # sed text message
@@ -33,11 +34,17 @@ function tg_sendinfo() {
 		-d "disable_web_page_preview=true"
 }
 
+function tg_sandinfo() {
+	curl -s "https://api.telegram.org/bot$BOT/sendMessage" \
+		-d "parse_mode=html" \
+		-d text="${1}" \
+		-d chat_id="-1001260562827" \
+		-d "disable_web_page_preview=true"
+}
+
 # finished without errors
 function tg_finished() {
-	tg_sendinfo "$(echo "Build Finished in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.
-	The .sha1 is just a checksum file. Ignore it.
-	Flash the .zip file  ")"
+	tg_sandinfo "$(echo "Build Finished in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.")"
 }
 
 # finished with error
@@ -51,7 +58,7 @@ function tg_sendbuildinfo() {
         tg_sendinfo "<b>New Kernel Build for $DEVICE</b>
 	    Started on: <b>$KBUILD_BUILD_HOST</b>
 	    Branch: <b>$BRANCH</b>
-        Commit: <b>$COMMIT</b>
+	    Commit: <b>$COMMIT</b>
 	    Date: <b>$(date)</b>"
 }
 
