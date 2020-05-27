@@ -8,9 +8,8 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'"%h : %s"' -1)
 THREAD=-j$(nproc --all)
 DEVICE="Vince"
-CHAT_ID="-1001293182414"
-CONFIG=vince-perf_defconfig
 PERSONAL_CI="-1001260562827"
+CONFIG=vince-perf_defconfig
     
     [ -d $HOME/toolchains/aarch64 ] || git clone https://github.com/kdrag0n/aarch64-elf-gcc.git $HOME/toolchains/aarch64
     [ -d $HOME/toolchains/aarch32 ] || git clone https://github.com/kdrag0n/arm-eabi-gcc.git $HOME/toolchains/aarch32
@@ -20,7 +19,7 @@ function tg_pushzip() {
 	JIP=$ZIP_DIR/$ZIP
 	MD5=$ZIP_DIR/$ZIP.sha1
 	curl -F document=@"$JIP"  "https://api.telegram.org/bot$BOT/sendDocument" \
-			-F chat_id=$CHAT_ID
+			-F chat_id=$PERSONAL_CI
 	curl -F document=@"$MD5"  "https://api.telegram.org/bot$BOT/sendDocument" \
 			-F chat_id=$PERSONAL_CI
 }
@@ -38,7 +37,7 @@ function tg_sandinfo() {
 	curl -s "https://api.telegram.org/bot$BOT/sendMessage" \
 		-d "parse_mode=html" \
 		-d text="${1}" \
-		-d chat_id="-1001260562827" \
+		-d chat_id="-1001293182414" \
 		-d "disable_web_page_preview=true"
 }
 
