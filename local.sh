@@ -23,6 +23,12 @@ function tg_pushzip() {
 			-F chat_id=$CHAT_ID
 }
 
+# Cleaner
+function repo_cleaner() {
+	rm -rf out
+	make clean && make mrproper
+}
+
 # sed text message
 function tg_sendinfo() {
 	curl -s "https://api.telegram.org/bot$BOT/sendMessage" \
@@ -60,8 +66,7 @@ function build_kern() {
     BUILD_START=$(date +"%s")
 
     # cleaup first
-    rm -rf out
-    make clean && make mrproper
+    repo_cleaner
 
     # building
     make O=out $CONFIG $THREAD
