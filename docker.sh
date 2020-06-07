@@ -22,7 +22,15 @@ fi
 
 # Telegram Start
 
-# upload to channel
+# upload build log to channel on failing
+tg_erlog()
+{
+	ERLOG=$HOME/build/build${BUILD}.txt
+	curl -F document=@"$ERLOG"  "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
+			-F chat_id=$CHANNEL_ID
+}
+
+# upload zip to channel
 tg_pushzip() 
 {
 	JIP=$ZIP_DIR/$ZIP
@@ -30,9 +38,6 @@ tg_pushzip()
 			-F chat_id=$CHANNEL_ID
 	SHA=$ZIP_DIR/$ZIP.sha1
 	curl -F document=@"$MD5"  "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
-			-F chat_id=$CHANNEL_ID
-	ERLOG=$HOME/build/build${BUILD}.txt
-	curl -F document=@"$ERLOG"  "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendDocument" \
 			-F chat_id=$CHANNEL_ID
 }
 
@@ -158,8 +163,9 @@ STRIP="${TC_PATH}/gcc-arm64/bin/aarch64-linux-android-strip"
 export CROSS_COMPILE="${TC_PATH}/gcc-arm64/bin/aarch64-linux-android-"
 export CROSS_COMPILE_ARM32="${TC_PATH}/gcc-arm/bin/arm-linux-androideabi-"
 export KERN_VER=$(echo "$(make kernelversion)")
-make clean && make mrproper
-tg_sandinfo "$(echo "Env Setup completed. Making kernel for $DEVICE version $KERN_VER SoonTM.</br>on Branch: $BRANCH")"
+make clean && make mrproper 
+tg_sandinfo "$(echo "Env Setup completed. Making kernel for $DEVICE version $KERN_VER SoonTM.
+on Branch: $BRANCH")"
 
 # Make defconfig & kernul 
 DATE=`date`
@@ -180,6 +186,7 @@ DIFF=$(($BUILD_END - $BUILD_START))
 # Check if Kernel Image exists
 if ! [ -a "$KERN_IMG" ]; then
 	tg_sandinfo "$(echo "Build ran into errors after $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds, plox check logs")"
+	tg_erlog
 	exit 1
 else
 	tg_sandinfo "$(echo "Build Finished after $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds")"
